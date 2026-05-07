@@ -119,8 +119,6 @@
       transparent 1px
     ),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  
-  /* CHANGE: Use radial-gradient to fade out all sides */
   mask-image: radial-gradient(
     ellipse at center, 
     black 50%, 

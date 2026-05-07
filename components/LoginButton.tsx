@@ -14,7 +14,6 @@ export default function LoginButton({
   const supabase = createClient()
 
   const signInWithGoogle = async () => {
-  const supabase = createClient()
   await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {

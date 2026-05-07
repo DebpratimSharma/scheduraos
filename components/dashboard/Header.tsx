@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { ChevronDown, Divide } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { UserNav } from "./UserNav";

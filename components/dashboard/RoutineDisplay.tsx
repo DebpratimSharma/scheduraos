@@ -40,7 +40,7 @@ const DAYS = [
   "Saturday",
 ];
 
-import ClientOnly from "./ClientOnly";
+import ClientOnly from "@/components/common/ClientOnly";
 
 
 export function RoutineDisplay({

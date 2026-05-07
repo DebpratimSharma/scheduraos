@@ -42,8 +42,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Menu } from 'lucide-react';
-import { updateSession } from "@/utils/supabase/proxy";
-import { updateTag } from "next/cache";
 import { useEffect, useState } from "react";
 
 export function UserNav() {

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, Circle, Loader2, Settings, CircleChevronRight  } from "lucide-react";
+import { CheckCircle2, Loader2, Settings, CircleChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { updateWorkingDays } from "@/app/dashboard/actions";
 import { createClient } from "@/utils/supabase/client";
-import { toast } from "sonner";   
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const MASTER_WEEK = [
   "Sunday",
@@ -26,25 +25,13 @@ const MASTER_WEEK = [
   "Saturday",
 ];
 
-const DAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 export function WorkingDaysDialog({customTrigger}:{customTrigger?: React.ReactNode}) {
-  const router = useRouter();
   const [selectedDays, setSelectedDays] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const supabase = createClient();
 
-  // 1. Fetch saved days from Supabase when dialog opens
-  const fetchSettings = async () => {
+  const fetchSettings = React.useCallback(async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -56,17 +43,22 @@ export function WorkingDaysDialog({customTrigger}:{customTrigger?: React.ReactNo
       .eq("user_id", user.id)
       .single();
 
-    if (data) {
+    if (error) {
+      console.error("Failed to fetch working days:", error);
+      setSelectedDays(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
+      return;
+    }
+
+    if (data?.working_days) {
       setSelectedDays(data.working_days);
     } else {
-      // Default days if no settings found
       setSelectedDays(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
     }
-  };
+  }, [supabase]);
 
   React.useEffect(() => {
     if (open) fetchSettings();
-  }, [open]);
+  }, [open, fetchSettings]);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -96,11 +88,10 @@ export function WorkingDaysDialog({customTrigger}:{customTrigger?: React.ReactNo
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {customTrigger || (<Button variant="ghost" className="w-full justify-start  py-1.5">
+        {customTrigger || (<Button variant="ghost" className="w-full justify-start py-1.5">
           <Settings size={18} />
           <span>Working Days</span>
           <CircleChevronRight className="md:hidden ml-auto my-auto h-4 w-4 text-accent-foreground" />
-
         </Button>)}
       </DialogTrigger>
 
@@ -111,12 +102,12 @@ export function WorkingDaysDialog({customTrigger}:{customTrigger?: React.ReactNo
           </DialogTitle>
         </DialogHeader>
 
-        <p className="text-muted-foreground text-sm mb-6 text-center" autoFocus>
+        <p className="text-muted-foreground text-sm mb-6 text-center">
           Select the days you have classes.
         </p>
 
         <div className="grid grid-cols-2 gap-3">
-          {DAYS.map((day) => {
+          {MASTER_WEEK.map((day) => {
             const isSelected = selectedDays.includes(day);
             return (
               <button
